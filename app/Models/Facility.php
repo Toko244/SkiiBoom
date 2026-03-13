@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Facility extends Model
+{
+    protected $fillable = [
+        'name',
+        'description',
+        'area_size', 'sort_order',
+    ];
+
+    public function images()
+    {
+        return $this->hasMany(FacilityImage::class)->orderBy('sort_order');
+    }
+}

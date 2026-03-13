@@ -1,0 +1,822 @@
+{
+	"info": {
+		"_postman_id": "skiboom-api-v1",
+		"name": "SkiBoom API V1",
+		"description": "SkiBoom Gudauri - Ski Resort Booking API\n\nMulti-language support: en, ka, ru\nAuthentication: Bearer token (Sanctum)\n\nSet `base_url` and `auth_token` variables before use.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"language\": \"en\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.token) {",
+									"    pm.collectionVariables.set('auth_token', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/forgot-password",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "forgot-password"]
+						}
+					}
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"reset-token-here\",\n  \"email\": \"john@example.com\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/reset-password",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "reset-password"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/user",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "user"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"phone\": \"+995555123456\",\n  \"language_pref\": \"en\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/user",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "user"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Content & Settings",
+			"item": [
+				{
+					"name": "Get Page Content",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/content/home",
+							"host": ["{{base_url}}"],
+							"path": ["content", "home"]
+						}
+					}
+				},
+				{
+					"name": "Get Page Section Content",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/content/home/hero",
+							"host": ["{{base_url}}"],
+							"path": ["content", "home", "hero"]
+						}
+					}
+				},
+				{
+					"name": "Get All Settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/settings",
+							"host": ["{{base_url}}"],
+							"path": ["settings"]
+						}
+					}
+				},
+				{
+					"name": "Get Settings by Group",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/settings/general",
+							"host": ["{{base_url}}"],
+							"path": ["settings", "general"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Equipment",
+			"item": [
+				{
+					"name": "List Equipment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/equipment?search=&category=&price_min=0&price_max=9999&size=&min_rating=&sort=popular&per_page=12",
+							"host": ["{{base_url}}"],
+							"path": ["equipment"],
+							"query": [
+								{"key": "search", "value": "", "description": "Search text"},
+								{"key": "category", "value": "", "description": "Single or comma-separated categories"},
+								{"key": "price_min", "value": "0", "description": "Minimum price"},
+								{"key": "price_max", "value": "9999", "description": "Maximum price"},
+								{"key": "size", "value": "", "description": "Single or comma-separated sizes"},
+								{"key": "min_rating", "value": "", "description": "Minimum rating"},
+								{"key": "sort", "value": "popular", "description": "popular, newest, rating, price_asc, price_desc, price-low, price-high"},
+								{"key": "per_page", "value": "12", "description": "Items per page (max 50)"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Featured Equipment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/equipment/featured",
+							"host": ["{{base_url}}"],
+							"path": ["equipment", "featured"]
+						}
+					}
+				},
+				{
+					"name": "Equipment Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/equipment/categories",
+							"host": ["{{base_url}}"],
+							"path": ["equipment", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Get Equipment by Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/equipment/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["equipment", ":slug"],
+							"variable": [
+								{"key": "slug", "value": "ski-boots-pro", "description": "Equipment slug"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Instructors",
+			"item": [
+				{
+					"name": "List Instructors",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/instructors",
+							"host": ["{{base_url}}"],
+							"path": ["instructors"]
+						}
+					}
+				},
+				{
+					"name": "Get Instructor by Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/instructors/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["instructors", ":slug"],
+							"variable": [
+								{"key": "slug", "value": "instructor-slug", "description": "Instructor slug"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Skill Levels",
+			"item": [
+				{
+					"name": "List Skill Levels",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/skill-levels",
+							"host": ["{{base_url}}"],
+							"path": ["skill-levels"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Lessons",
+			"item": [
+				{
+					"name": "List Lessons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/lessons?skill_level=&instructor_id=",
+							"host": ["{{base_url}}"],
+							"path": ["lessons"],
+							"query": [
+								{"key": "skill_level", "value": "", "description": "Comma-separated skill level IDs"},
+								{"key": "instructor_id", "value": "", "description": "Filter by instructor ID"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Lesson by Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/lessons/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["lessons", ":slug"],
+							"variable": [
+								{"key": "slug", "value": "lesson-slug", "description": "Lesson slug"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Lesson Packages",
+			"item": [
+				{
+					"name": "List Lesson Packages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/lesson-packages",
+							"host": ["{{base_url}}"],
+							"path": ["lesson-packages"]
+						}
+					}
+				},
+				{
+					"name": "Available Lesson Packages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/lesson-packages/available",
+							"host": ["{{base_url}}"],
+							"path": ["lesson-packages", "available"]
+						}
+					}
+				},
+				{
+					"name": "Get Lesson Package by Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/lesson-packages/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["lesson-packages", ":slug"],
+							"variable": [
+								{"key": "slug", "value": "package-slug", "description": "Lesson package slug"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"+995555123456\",\n  \"start_date\": \"2026-03-15\",\n  \"end_date\": \"2026-03-18\",\n  \"number_of_days\": 3,\n  \"currency\": \"GEL\",\n  \"arrival_date\": \"2026-03-15\",\n  \"payment_method\": \"card\",\n  \"customer_message\": \"Looking forward to skiing!\",\n  \"language\": \"en\",\n  \"equipment\": [\n    {\n      \"equipment_id\": 1,\n      \"quantity\": 1\n    }\n  ],\n  \"lesson\": {\n    \"lesson_id\": 1\n  },\n  \"lesson_package_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/bookings",
+							"host": ["{{base_url}}"],
+							"path": ["bookings"]
+						}
+					}
+				},
+				{
+					"name": "Get Booking by Reference",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/bookings/:bookingRef",
+							"host": ["{{base_url}}"],
+							"path": ["bookings", ":bookingRef"],
+							"variable": [
+								{"key": "bookingRef", "value": "BOOK-ABC123", "description": "Booking reference code"}
+							]
+						}
+					}
+				},
+				{
+					"name": "My Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/bookings/my",
+							"host": ["{{base_url}}"],
+							"path": ["bookings", "my"]
+						}
+					}
+				},
+				{
+					"name": "Cancel Booking",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/bookings/:booking/cancel",
+							"host": ["{{base_url}}"],
+							"path": ["bookings", ":booking", "cancel"],
+							"variable": [
+								{"key": "booking", "value": "1", "description": "Booking ID"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Gallery",
+			"item": [
+				{
+					"name": "List Gallery Photos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/gallery?category=&season=&sort=recent&per_page=20",
+							"host": ["{{base_url}}"],
+							"path": ["gallery"],
+							"query": [
+								{"key": "category", "value": "", "description": "skiing, equipment, lessons, slopes, or all"},
+								{"key": "season", "value": "", "description": "winter, spring, summer, autumn, or all"},
+								{"key": "sort", "value": "recent", "description": "recent, popular, oldest"},
+								{"key": "per_page", "value": "20", "description": "Items per page (max 50)"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Gallery Photo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/gallery/:photo",
+							"host": ["{{base_url}}"],
+							"path": ["gallery", ":photo"],
+							"variable": [
+								{"key": "photo", "value": "1", "description": "Photo ID"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Submit Gallery Photo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{"key": "title", "value": "Amazing ski day", "type": "text"},
+								{"key": "description", "value": "Beautiful sunny day on the slopes", "type": "text"},
+								{"key": "image", "type": "file", "src": ""},
+								{"key": "category", "value": "skiing", "type": "text", "description": "skiing, equipment, lessons, slopes"},
+								{"key": "season", "value": "winter", "type": "text", "description": "winter, spring, summer, autumn"},
+								{"key": "author_name", "value": "John Doe", "type": "text"}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/gallery",
+							"host": ["{{base_url}}"],
+							"path": ["gallery"]
+						}
+					}
+				},
+				{
+					"name": "Like Photo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/gallery/:photo/like",
+							"host": ["{{base_url}}"],
+							"path": ["gallery", ":photo", "like"],
+							"variable": [
+								{"key": "photo", "value": "1", "description": "Photo ID"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Unlike Photo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/gallery/:photo/like",
+							"host": ["{{base_url}}"],
+							"path": ["gallery", ":photo", "like"],
+							"variable": [
+								{"key": "photo", "value": "1", "description": "Photo ID"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Testimonials",
+			"item": [
+				{
+					"name": "List Testimonials",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/testimonials",
+							"host": ["{{base_url}}"],
+							"path": ["testimonials"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "FAQs",
+			"item": [
+				{
+					"name": "List FAQs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/faqs",
+							"host": ["{{base_url}}"],
+							"path": ["faqs"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "About",
+			"item": [
+				{
+					"name": "Get Team Members",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/about/team",
+							"host": ["{{base_url}}"],
+							"path": ["about", "team"]
+						}
+					}
+				},
+				{
+					"name": "Get Certifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/about/certifications",
+							"host": ["{{base_url}}"],
+							"path": ["about", "certifications"]
+						}
+					}
+				},
+				{
+					"name": "Get Partners",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/about/partners",
+							"host": ["{{base_url}}"],
+							"path": ["about", "partners"]
+						}
+					}
+				},
+				{
+					"name": "Get Facilities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/about/facilities",
+							"host": ["{{base_url}}"],
+							"path": ["about", "facilities"]
+						}
+					}
+				},
+				{
+					"name": "Get Timeline",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{base_url}}/about/timeline",
+							"host": ["{{base_url}}"],
+							"path": ["about", "timeline"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin > Gallery",
+			"item": [
+				{
+					"name": "List All Photos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/gallery?status=&category=&season=&per_page=20",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "gallery"],
+							"query": [
+								{"key": "status", "value": "", "description": "pending, approved, rejected"},
+								{"key": "category", "value": "", "description": "skiing, equipment, lessons, slopes"},
+								{"key": "season", "value": "", "description": "winter, spring, summer, autumn"},
+								{"key": "per_page", "value": "20", "description": "Items per page (max 50)"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Photo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/gallery/:photo",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "gallery", ":photo"],
+							"variable": [
+								{"key": "photo", "value": "1", "description": "Photo ID"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Photo",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"approved\",\n  \"title\": \"Updated title\",\n  \"category\": \"skiing\",\n  \"sort_order\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/gallery/:photo",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "gallery", ":photo"],
+							"variable": [
+								{"key": "photo", "value": "1", "description": "Photo ID"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Photo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{auth_token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/gallery/:photo",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "gallery", ":photo"],
+							"variable": [
+								{"key": "photo", "value": "1", "description": "Photo ID"}
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}
