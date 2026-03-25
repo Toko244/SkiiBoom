@@ -12,7 +12,7 @@ class EquipmentController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Equipment::with(['images', 'specifications']);
+        $query = Equipment::with(['category', 'images', 'specifications']);
 
         // By default show all items; when availability=available, show only available
         if ($request->input('availability') === 'available') {
@@ -74,7 +74,7 @@ class EquipmentController extends Controller
 
     public function featured(): JsonResponse
     {
-        $equipment = Equipment::with(['images'])
+        $equipment = Equipment::with(['category', 'images'])
             ->available()
             ->featured()
             ->orderBy('rating', 'desc')
@@ -89,7 +89,7 @@ class EquipmentController extends Controller
 
     public function show(string $slug): JsonResponse
     {
-        $equipment = Equipment::with(['images', 'specifications'])
+        $equipment = Equipment::with(['category', 'images', 'specifications'])
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -101,10 +101,12 @@ class EquipmentController extends Controller
 
     public function categories(): JsonResponse
     {
-        $categories = Equipment::available()
-            ->selectRaw('category, COUNT(*) as count')
-            ->groupBy('category')
-            ->pluck('count', 'category');
+        $categories = \App\Models\EquipmentCategory::withCount(['equipment' => function ($query) {
+            $query->where('available', true);
+        }])
+            ->orderBy('sort_order')
+            ->get()
+            ->pluck('equipment_count', 'slug');
 
         return response()->json([
             'success' => true,

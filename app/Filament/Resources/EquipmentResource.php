@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\EquipmentCategory;
 use App\Filament\Resources\EquipmentResource\Pages;
 use App\Models\Equipment;
 use Filament\Forms;
@@ -61,11 +60,24 @@ class EquipmentResource extends Resource
                                     ->columns(2),
                                 Forms\Components\Group::make()
                                     ->schema([
-                                        Forms\Components\Select::make('category')
-                                            ->options(EquipmentCategory::class)
+                                        Forms\Components\Select::make('category_id')
+                                            ->label('Category')
+                                            ->relationship('category', 'name')
                                             ->required()
                                             ->native(false)
-                                            ->searchable(),
+                                            ->searchable()
+                                            ->preload()
+                                            ->createOptionForm([
+                                                Forms\Components\TextInput::make('name')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state ?? ''))),
+                                                Forms\Components\TextInput::make('slug')
+                                                    ->required()
+                                                    ->unique('equipment_categories', 'slug')
+                                                    ->maxLength(255),
+                                            ]),
                                         Forms\Components\TextInput::make('price_per_day')
                                             ->label('Price per Day')
                                             ->numeric()
@@ -222,7 +234,7 @@ class EquipmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
-                    ->description(fn (Equipment $record) => $record->category?->value),
+                    ->description(fn (Equipment $record) => $record->category?->name),
                 Tables\Columns\TextColumn::make('price_per_day')
                     ->label('Price/Day')
                     ->money('GEL')
@@ -242,8 +254,9 @@ class EquipmentResource extends Resource
                     ->onColor('warning'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('category')
-                    ->options(EquipmentCategory::class)
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name')
                     ->multiple()
                     ->preload(),
                 Tables\Filters\TernaryFilter::make('available')

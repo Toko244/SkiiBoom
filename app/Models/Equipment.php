@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\EquipmentCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Equipment extends Model
@@ -16,7 +16,7 @@ class Equipment extends Model
     protected $fillable = [
         'slug', 'name',
         'description',
-        'category', 'price_per_day', 'rating', 'reviews_count',
+        'category_id', 'price_per_day', 'rating', 'reviews_count',
         'available', 'sizes', 'features',
         'is_featured', 'sort_order',
     ];
@@ -24,7 +24,6 @@ class Equipment extends Model
     protected function casts(): array
     {
         return [
-            'category' => EquipmentCategory::class,
             'price_per_day' => 'decimal:2',
             'rating' => 'decimal:1',
             'available' => 'boolean',
@@ -32,6 +31,11 @@ class Equipment extends Model
             'sizes' => 'array',
             'features' => 'array',
         ];
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(EquipmentCategory::class);
     }
 
     public function images()
@@ -61,7 +65,9 @@ class Equipment extends Model
 
     public function scopeInCategory($query, $categories)
     {
-        return $query->whereIn('category', (array) $categories);
+        return $query->whereHas('category', function ($q) use ($categories) {
+            $q->whereIn('slug', (array) $categories);
+        });
     }
 
     public function scopePriceBetween($query, $min, $max)

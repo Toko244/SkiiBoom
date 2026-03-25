@@ -15,7 +15,7 @@ class EquipmentResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
-            'category' => $this->category,
+            'category' => $this->category?->slug,
             'price' => (float) $this->price_per_day,
             'image' => $this->whenLoaded('primaryImage', function () {
                 return $this->storageUrl($this->primaryImage?->image_path);

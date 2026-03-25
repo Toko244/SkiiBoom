@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Equipment;
+use App\Models\EquipmentCategory;
 use App\Models\EquipmentImage;
 use App\Models\EquipmentSpecification;
 use Illuminate\Database\Seeder;
@@ -12,10 +13,12 @@ class EquipmentSeeder extends Seeder
 {
     public function run(): void
     {
+        $categoryMap = EquipmentCategory::pluck('id', 'slug');
+
         $items = [
             [
                 'name' => 'Rossignol Experience 88 Ti Skis',
-                'category' => 'skis',
+                'category_id' => 'skis',
                 'price_per_day' => 45,
                 'rating' => 4.8,
                 'reviews_count' => 124,
@@ -33,7 +36,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Burton Custom Snowboard',
-                'category' => 'snowboards',
+                'category_id' => 'snowboards',
                 'price_per_day' => 50,
                 'rating' => 4.9,
                 'reviews_count' => 98,
@@ -50,7 +53,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Salomon Quest Access 80 Boots',
-                'category' => 'boots',
+                'category_id' => 'boots',
                 'price_per_day' => 35,
                 'rating' => 4.6,
                 'reviews_count' => 87,
@@ -66,7 +69,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Smith I/O Mag XL Goggles',
-                'category' => 'goggles',
+                'category_id' => 'goggles',
                 'price_per_day' => 25,
                 'rating' => 4.7,
                 'reviews_count' => 156,
@@ -82,7 +85,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Black Diamond Carbon Pro Poles',
-                'category' => 'poles',
+                'category_id' => 'poles',
                 'price_per_day' => 20,
                 'rating' => 4.5,
                 'reviews_count' => 67,
@@ -98,7 +101,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'POC Obex BC SPIN Helmet',
-                'category' => 'helmets',
+                'category_id' => 'helmets',
                 'price_per_day' => 30,
                 'rating' => 4.8,
                 'reviews_count' => 92,
@@ -114,7 +117,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'K2 Mindbender 99 Ti Skis',
-                'category' => 'skis',
+                'category_id' => 'skis',
                 'price_per_day' => 48,
                 'rating' => 4.7,
                 'reviews_count' => 73,
@@ -130,7 +133,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Atomic Hawx Ultra 130 Boots',
-                'category' => 'boots',
+                'category_id' => 'boots',
                 'price_per_day' => 40,
                 'rating' => 4.9,
                 'reviews_count' => 54,
@@ -146,7 +149,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Oakley Flight Deck XM Goggles',
-                'category' => 'goggles',
+                'category_id' => 'goggles',
                 'price_per_day' => 22,
                 'rating' => 4.6,
                 'reviews_count' => 134,
@@ -162,7 +165,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Volkl Mantra M6 Skis',
-                'category' => 'skis',
+                'category_id' => 'skis',
                 'price_per_day' => 52,
                 'rating' => 4.9,
                 'reviews_count' => 89,
@@ -178,7 +181,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Jones Flagship Snowboard',
-                'category' => 'snowboards',
+                'category_id' => 'snowboards',
                 'price_per_day' => 55,
                 'rating' => 4.8,
                 'reviews_count' => 76,
@@ -194,7 +197,7 @@ class EquipmentSeeder extends Seeder
             ],
             [
                 'name' => 'Leki Carbon 14 3D Poles',
-                'category' => 'poles',
+                'category_id' => 'poles',
                 'price_per_day' => 28,
                 'rating' => 4.4,
                 'reviews_count' => 45,
@@ -213,6 +216,8 @@ class EquipmentSeeder extends Seeder
         foreach ($items as $index => $item) {
             $specs = $item['specifications'] ?? [];
             unset($item['specifications']);
+
+            $item['category_id'] = $categoryMap[$item['category_id']] ?? null;
 
             $equipment = Equipment::create(array_merge($item, [
                 'slug' => Str::slug($item['name']),
